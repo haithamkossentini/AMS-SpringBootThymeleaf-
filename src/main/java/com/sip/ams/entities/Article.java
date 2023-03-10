@@ -1,5 +1,4 @@
 package com.sip.ams.entities;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,41 +12,43 @@ import javax.validation.constraints.NotBlank;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+
 @Entity
+
 public class Article {
-	@Id  //clé primaire
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-	
+
     @NotBlank(message = "Label is mandatory")
     @Column(name = "label")
     private String label;
     
+    
+ 
     @Column(name = "price")
     private float price;
-	
-	@ManyToOne(fetch=FetchType.LAZY,optional = false)
-	@JoinColumn(name="provider_id",nullable =false)
-	@OnDelete(action = OnDeleteAction.CASCADE)
-	private Provider provider;
 
-	
-	
-	public Article()
-	{
-	}
-	public Article(String label,float price) {
-		this.price = price ; 
-		this.label=label;
-	}
+    @Column(name = "picture")
+    private String picture;
 
-	public long getId() {
-		return id;
-	}
+    public Article() {}
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    public Article(String label, float price, String picture) {
+        this.price = price;
+        this.label = label;
+        this.picture = picture;
+        }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getId() {
+        return id;
+    }
 
 	public String getLabel() {
 		return label;
@@ -65,12 +66,28 @@ public class Article {
 		this.price = price;
 	}
 
-	public Provider getProvider() {
-		return provider;
-	}
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
 
-	public void setProvider(Provider provider) {
-		this.provider = provider;
-	}
+    public String getPicture() {
+        return picture;
+    }
+
+    /**** Many To One ****/
+    @JsonIgnore	
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "provider_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Provider provider;
 	
+	
+	public Provider getProvider() {
+    	return provider;
+    }
+    
+    public void setProvider(Provider provider) {
+    	this.provider=provider;
+    }  
+    
 }

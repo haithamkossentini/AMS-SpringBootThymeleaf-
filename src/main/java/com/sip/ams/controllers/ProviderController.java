@@ -16,27 +16,28 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sip.ams.entities.Provider;
 import com.sip.ams.repositories.ProviderRepository;
+import com.sip.ams.entities.Article;
+import com.sip.ams.services.ProviderService;
 
 @Controller
 @RequestMapping("/provider")
 public class ProviderController {
 	
 private final ProviderRepository providerRepository;
-	
+    private final ProviderService providerService;
 
     @Autowired
-    public ProviderController(ProviderRepository providerRepository) {
+    public ProviderController(ProviderRepository providerRepository, ProviderService providerService) {
         this.providerRepository = providerRepository;
+        this.providerService = providerService;
     }
 
 
     @GetMapping("list")
     //@ResponseBody
     public String listProviders(Model model) {
-    	
-    	List<Provider> lp = (List<Provider>)providerRepository.findAll();
-    	if(lp.size() == 0)
-    		lp = null;
+    	List<Provider> lp = this.providerService.getAllProvider();
+
         model.addAttribute("providers", lp);
         
         return "provider/listProviders";
@@ -57,7 +58,8 @@ private final ProviderRepository providerRepository;
         }
         if(provider.getName()=="")
         	provider.setName(null);
-        providerRepository.save(provider);
+        //providerRepository.save(provider);
+        this.providerService.persistProvider(provider);
         return "redirect:list";
     }
 
@@ -107,6 +109,18 @@ private final ProviderRepository providerRepository;
     	providerRepository.save(provider);
     	return"redirect:list";
     	
+    }
+    @GetMapping("show/{id}")
+    public String showProvider(@PathVariable("id") long id, Model model) {
+        Provider provider = providerRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid provider Id:" + id));
+        List<Article> articles = providerRepository.findArticlesByProvider(id);
+        for (Article a : articles)
+            System.out.println("Article = " + a.getLabel());
+
+        model.addAttribute("articles", articles);
+        model.addAttribute("provider", provider);
+        return "provider/showProvider";
     }
 
 	
