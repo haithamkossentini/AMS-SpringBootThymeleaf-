@@ -22,10 +22,10 @@ public class LoginController {
 	@ResponseBody
 	public String addUser() {
 		User user = new User();
-		user.setEmail("amine.mezghich@gmail.com");
+		user.setEmail("haitham@gmail.com");
 		user.setPassword("123456");
-		user.setName("Mohamed Amine");
-		user.setLastName("MEZGHICH");
+		user.setName("Haitham");
+		user.setLastName("KSENTINI");
 		this.userService.saveUser(user);
 		return "Added";
 	}

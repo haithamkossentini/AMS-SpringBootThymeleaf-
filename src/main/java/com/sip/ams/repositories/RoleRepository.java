@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 @Repository("roleRepository")
 public interface RoleRepository extends JpaRepository<Role, Integer>  {
-
+	Role findByRole(String role);
 }
 
 
